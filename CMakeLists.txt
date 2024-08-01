@@ -20,7 +20,7 @@ set(HWS_SOURCES
 
 # create hardware sampling library
 set(HWS_LIBRARY_NAME hardware_sampling)
-add_library(${HWS_LIBRARY_NAME} SHARED ${HWS_SOURCES})
+add_library(${HWS_LIBRARY_NAME} STATIC ${HWS_SOURCES})
 
 # set install target
 set(HWS_TARGETS_TO_INSTALL ${HWS_LIBRARY_NAME})
@@ -37,10 +37,9 @@ target_include_directories(${HWS_LIBRARY_NAME} PUBLIC
 # additional library compile options
 target_compile_options(${HWS_LIBRARY_NAME} PUBLIC
         $<$<COMPILE_LANGUAGE:CXX>:$<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wdouble-promotion -fno-common -Wshadow -Wcast-qual
-        -Wnull-dereference -Wnon-virtual-dtor -Wextra-semi -Wunreachable-code -Wuninitialized -Wno-ctor-dtor-privacy>
+        -Wnull-dereference -Wnon-virtual-dtor -Wextra-semi -Wunreachable-code -Wuninitialized -Wno-ctor-dtor-privacy -fPIC>
         $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wsuggest-override -Wstrict-null-sentinel -Wlogical-op -Wduplicated-branches -Wimplicit-fallthrough=5>
-        $<$<COMPILE_LANG_AND_ID:CXX,Clang>:-Wmost>
-        $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /bigobj /wd4459 /Zc:lambda>>
+        $<$<COMPILE_LANG_AND_ID:CXX,Clang>:-Wmost>>
 )
 
 ## add option to enable/disable error checking in the hardware sampling functions
@@ -241,6 +240,8 @@ option(HWS_ENABLE_PYTHON_BINDINGS "Build langauge bindings for Python." ON)
 
 if (HWS_ENABLE_PYTHON_BINDINGS)
     add_subdirectory(bindings)
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif ()
 
 
